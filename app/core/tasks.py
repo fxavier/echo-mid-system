@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
-from core.models import DatabaseConfig
+from core.models import DatabaseConfig, MissedAppointment, PatientEligibleVLCollection, ViralLoadTestResult, Visit
 from core.services.data_service import AddDataToMiddleware, PostData
 
 
@@ -58,3 +58,23 @@ def post_eligible_for_vl():
 @shared_task
 def post_vl_test_result():
     PostData().post_vl_test_result()
+
+
+@shared_task
+def delete_arv_dispensig():
+    Visit.objects.all().delete()
+
+
+@shared_task
+def delete_missed_appointment():
+    MissedAppointment.objects.all().delete()
+
+
+@shared_task
+def delete_eligible_for_vl():
+    PatientEligibleVLCollection.objects.all().delete()
+
+
+@shared_task
+def delete_vl_test_result():
+    ViralLoadTestResult.objects.all().delete()
