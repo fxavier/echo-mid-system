@@ -1,0 +1,96 @@
+version: '3.3'
+
+services:
+  app:
+    build:
+      context: .
+    command: >
+     sh -c "python manage.py wait_for_db &&
+            python manage.py migrate &&
+            python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app:/app
+      - ./data/web:/vol/web
+
+    environment:
+      - SECRET_KEY=devsecretkey
+      - DEBUG=1
+      - DB_HOST=db
+      - DB_NAME=local
+      - DB_USER=local
+      - DB_PASS=changeme
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:13-alpine
+    container_name: echo-mid
+    environment:
+      - POSTGRES_DB=local
+      - POSTGRES_USER=local
+      - POSTGRES_PASSWORD=changeme
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+
+    ports:
+      - 5432:5432
+
+  
+  celery:
+    container_name: echo-mid-celery
+    restart: always
+    build: 
+      context: . 
+    command: celery -A app worker -l info
+    volumes: 
+      - ./app:/app
+    environment:
+      - SECRET_KEY=devsecretkey
+      - DEBUG=1
+      - DB_HOST=db 
+      - DB_NAME=local
+      - DB_USER=local
+      - DB_PASS=changeme
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+      
+    depends_on:
+      - app
+      - redis
+    
+  celery-beat:
+    container_name: echo-mid-celery-beat
+    build:
+      context: .
+    command: celery -A app beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes: 
+      - ./app:/app
+    environment:
+      - SECRET_KEY=devsecretkey
+      - DEBUG=1
+      - DB_HOST=db 
+      - DB_NAME=local
+      - DB_USER=local
+      - DB_PASS=changeme
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    depends_on:
+      - app
+      - redis
+
+  redis:
+      image: redis
+      container_name: echo-mid-redis
+      ports:
+        - 6379:6379
+  
+
+volumes:
+  pgdata:
+      
