@@ -28,7 +28,6 @@ def add_eligible_for_vl():
     instance = str(database_conf.openmrs_url) \
         + str(database_conf.openmrs_rest_endpoint) \
         + str(database_conf.viral_load_eligibility_uuid)
-    # instance = '192.168.0.32:8080/openmrs/ws/rest/v1/reportingrest/dataSet/ffeed60a-2a94-4875-80cd-4baca75f13d4'
     AddDataToMiddleware().add_eligible_for_vl(instance)
 
 
@@ -38,7 +37,6 @@ def add_vl_test_result():
     instance = str(database_conf.openmrs_url) \
         + str(database_conf.openmrs_rest_endpoint) \
         + str(database_conf.viral_load_test_result_uuid)
-    # instance = '192.168.0.32:8080/openmrs/ws/rest/v1/reportinginstancerest/dataSet/ffeed60a-2a94-4875-80cd-4baca75f13d4'
     AddDataToMiddleware().add_vl_test_result(instance)
 
 
@@ -50,3 +48,13 @@ def post_sms_reminder():
 @shared_task
 def post_missed_appointment():
     PostData.post_missed_appointment()
+
+
+@shared_task
+def post_eligible_for_vl():
+    PostData().post_eligible_for_vl()
+
+
+@shared_task
+def post_vl_test_result():
+    PostData().post_vl_test_result()
