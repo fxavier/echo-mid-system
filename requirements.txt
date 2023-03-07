@@ -1,4 +1,4 @@
-Django>=4.1.6,<4.2
+Django>=3.2.5,<3.3
 psycopg2==2.9.5
 import-export==0.2.67.dev6
 django-import-export #==2.7.1
