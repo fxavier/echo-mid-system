@@ -76,3 +76,5 @@ admin.site.register(PatientEligibleVLCollection,
 admin.site.register(ViralLoadTestResult, ViralLoadTestResultAdmin)
 # admin.site.register(GlobalProperty, GlobalPropertyAdmin)
 admin.site.register(DatabaseConfig, DatabaseConfigAdmin)
+
+admin.site.site_header = 'ECHO MID SYSTEM'
