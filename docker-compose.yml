@@ -30,7 +30,7 @@ services:
 
   db:
     image: postgres:13-alpine
-    container_name: echo-mid
+    container_name: echo-middb
     environment:
       - POSTGRES_DB=local
       - POSTGRES_USER=local
@@ -39,7 +39,7 @@ services:
       - pgdata:/var/lib/postgresql/data/
 
     ports:
-      - 5432:5432
+      - 5433:5433
 
   
   celery:
