@@ -14,8 +14,8 @@ class FetchOpenMRSData:
         database_conf = DatabaseConfig.objects.get(pk=1)
         auth = (str(database_conf.openmrs_username),
                 str(database_conf.openmrs_password))
-        start_date = date.today() + timedelta(days=3)
-        end_date = start_date + timedelta(days=16)
+        start_date = date.today() + timedelta(days=1)
+        end_date = start_date + timedelta(days=5)
         params = {
             'startDate': str(start_date),
             'endDate': str(end_date)
