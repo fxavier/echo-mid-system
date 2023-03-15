@@ -5,7 +5,7 @@ from core.services.data_service import AddDataToMiddleware, PostData
 
 
 @shared_task
-def add_arv_dispensing():
+def pacientes_marcados_para_levantamento_de_arvs():
     database_conf = DatabaseConfig.objects.get(pk=1)
     instance = str(database_conf.openmrs_url) \
         + str(database_conf.openmrs_rest_endpoint) \
@@ -14,7 +14,7 @@ def add_arv_dispensing():
 
 
 @shared_task
-def add_missed_appointments():
+def pacientes_faltosos_ao_levantamento_ou_consulta():
     database_conf = DatabaseConfig.objects.get(pk=1)
     instance = str(database_conf.openmrs_url) \
         + str(database_conf.openmrs_rest_endpoint) \
@@ -23,7 +23,7 @@ def add_missed_appointments():
 
 
 @shared_task
-def add_eligible_for_vl():
+def pacientes_elegiveis_carga_viral():
     database_conf = DatabaseConfig.objects.get(pk=1)
     instance = str(database_conf.openmrs_url) \
         + str(database_conf.openmrs_rest_endpoint) \
@@ -32,7 +32,7 @@ def add_eligible_for_vl():
 
 
 @shared_task
-def add_vl_test_result():
+def pacientes_com_carga_viral_alta():
     database_conf = DatabaseConfig.objects.get(pk=1)
     instance = str(database_conf.openmrs_url) \
         + str(database_conf.openmrs_rest_endpoint) \
@@ -41,40 +41,40 @@ def add_vl_test_result():
 
 
 @shared_task
-def post_sms_reminder():
+def Envio_pacientes_marcados_levantamento():
     PostData.post_sms_reminder()
 
 
 @shared_task
-def post_missed_appointment():
+def Envio_faltosos_ao_levantamento_ou_consulta():
     PostData.post_missed_appointment()
 
 
 @shared_task
-def post_eligible_for_vl():
+def envio_eligiveis_carga_viral():
     PostData().post_eligible_for_vl()
 
 
 @shared_task
-def post_vl_test_result():
+def envio_pacientes_carga_viral_alta():
     PostData().post_vl_test_result()
 
 
 @shared_task
-def delete_arv_dispensig():
+def delete_pacientes_marcados_para_levantamento():
     Visit.objects.all().delete()
 
 
 @shared_task
-def delete_missed_appointment():
+def delete_faltosos_levantemento_ou_consulta():
     MissedAppointment.objects.all().delete()
 
 
 @shared_task
-def delete_eligible_for_vl():
+def delete_elegiveis_carga_viral():
     PatientEligibleVLCollection.objects.all().delete()
 
 
 @shared_task
-def delete_vl_test_result():
+def delete_pacientes_com_carga_viral_alta():
     ViralLoadTestResult.objects.all().delete()
