@@ -39,6 +39,7 @@ class FetchOpenMRSData:
         try:
             response = requests.get(
                 instance, params=params, auth=auth)
+
             data_list = response.json()['rows']
             return data_list
         except requests.exceptions.RequestException as err:
@@ -228,6 +229,7 @@ class PostData:
             for data in payload_list:
                 response = requests.post(
                     cls.database_conf.viamo_api_url, json=data)
+                records += 1
                 print(f'Sending {records} of {len(payload_list)} Records')
                 if response.status_code == 200:
                     records += 1
@@ -278,6 +280,7 @@ class PostData:
             for data in payload_list:
                 response = requests.post(
                     cls.database_conf.viamo_api_url, json=data)
+                records += 1
                 print(f'Sending {records} of {len(payload_list)} Records')
                 if response.status_code == 200:
                     records += 1
@@ -328,6 +331,7 @@ class PostData:
             for data in payload_list:
                 response = requests.post(
                     cls.database_conf.viamo_api_url, json=data)
+                records += 1
                 print(f'Sending {records} of {len(payload_list)} Records')
                 if response.status_code == 200:
                     records += 1
@@ -378,6 +382,7 @@ class PostData:
             for data in payload_list:
                 response = requests.post(
                     cls.database_conf.viamo_api_url, json=data)
+                records += 1
                 print(f'Sending {records} of {len(payload_list)} Records')
                 if response.status_code == 200:
                     records += 1

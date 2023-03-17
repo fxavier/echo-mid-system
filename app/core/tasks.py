@@ -3,6 +3,8 @@ from celery import shared_task
 from core.models import DatabaseConfig, MissedAppointment, PatientEligibleVLCollection, ViralLoadTestResult, Visit
 from core.services.data_service import AddDataToMiddleware, PostData
 
+message = 'Dados carregados e salvos na base de dados com sucesso'
+
 
 @shared_task
 def pacientes_marcados_para_levantamento_de_arvs():
@@ -11,6 +13,7 @@ def pacientes_marcados_para_levantamento_de_arvs():
         + str(database_conf.openmrs_rest_endpoint) \
         + str(database_conf.reminder_uuid)
     AddDataToMiddleware().add_arv_dispensing(instance)
+    return 'Dados carregados e salvos na base de dados com sucesso'
 
 
 @shared_task
