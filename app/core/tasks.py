@@ -3,21 +3,20 @@ from celery import shared_task
 from core.models import DatabaseConfig, MissedAppointment, PatientEligibleVLCollection, ViralLoadTestResult, Visit
 from core.services.data_service import AddDataToMiddleware, PostData
 
-message = 'Dados carregados e salvos na base de dados com sucesso'
-
 
 @shared_task
 def pacientes_marcados_para_levantamento_de_arvs():
+    Visit.objects.all().delete()
     database_conf = DatabaseConfig.objects.get(pk=1)
     instance = str(database_conf.openmrs_url) \
         + str(database_conf.openmrs_rest_endpoint) \
         + str(database_conf.reminder_uuid)
     AddDataToMiddleware().add_arv_dispensing(instance)
-    return 'Dados carregados e salvos na base de dados com sucesso'
 
 
 @shared_task
 def pacientes_faltosos_ao_levantamento_ou_consulta():
+    MissedAppointment.objects.all().delete()
     database_conf = DatabaseConfig.objects.get(pk=1)
     instance = str(database_conf.openmrs_url) \
         + str(database_conf.openmrs_rest_endpoint) \
@@ -27,6 +26,7 @@ def pacientes_faltosos_ao_levantamento_ou_consulta():
 
 @shared_task
 def pacientes_elegiveis_carga_viral():
+    PatientEligibleVLCollection.objects.all().delete()
     database_conf = DatabaseConfig.objects.get(pk=1)
     instance = str(database_conf.openmrs_url) \
         + str(database_conf.openmrs_rest_endpoint) \
@@ -36,6 +36,7 @@ def pacientes_elegiveis_carga_viral():
 
 @shared_task
 def pacientes_com_carga_viral_alta():
+    ViralLoadTestResult.objects.all().delete()
     database_conf = DatabaseConfig.objects.get(pk=1)
     instance = str(database_conf.openmrs_url) \
         + str(database_conf.openmrs_rest_endpoint) \
