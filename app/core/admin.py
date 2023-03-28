@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 from import_export.admin import ImportExportMixin
 
 from core.models import PatientEligibleVLCollection, ViralLoadTestResult, GlobalProperty, Visit, MissedAppointment, DatabaseConfig
+from assistencia_tecnica.models import Provincia, Distrito, UnidadeSanitaria, Sector, Area, Indicador, FichaAssistenciaTecnica
 from users.models import User
 
 
@@ -68,6 +69,35 @@ class DatabaseConfigAdmin(ImportExportMixin, admin.ModelAdmin):
     ]
 
 
+class ProvinciaAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ['id', 'nome']
+
+
+class DistritoAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ['id', 'nome', 'provincia']
+
+
+class UnidadeSanitariaAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ['id', 'nome', 'distrito']
+
+
+class SectorAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ['id', 'nome']
+
+
+class AreaAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ['id', 'nome', 'sector']
+
+
+class IndicadorAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ['id', 'nome', 'area']
+
+
+class FichaAssistenciaTecnicaAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ['id', 'nome_responsavel', 'nome_provedor', 'problemas_identificados',
+                    'tipo_problema', 'atcividades_realizar_resolver_problema']
+
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Visit, VisitAdmin)
 admin.site.register(MissedAppointment, MissedAppointmentAdmin)
@@ -76,5 +106,12 @@ admin.site.register(PatientEligibleVLCollection,
 admin.site.register(ViralLoadTestResult, ViralLoadTestResultAdmin)
 # admin.site.register(GlobalProperty, GlobalPropertyAdmin)
 admin.site.register(DatabaseConfig, DatabaseConfigAdmin)
+admin.site.register(Provincia, ProvinciaAdmin)
+admin.site.register(Distrito, DistritoAdmin)
+admin.site.register(UnidadeSanitaria, UnidadeSanitariaAdmin)
+admin.site.register(Sector, SectorAdmin)
+admin.site.register(Area, AreaAdmin)
+admin.site.register(Indicador, IndicadorAdmin)
+admin.site.register(FichaAssistenciaTecnica, FichaAssistenciaTecnicaAdmin)
 
 admin.site.site_header = 'ECHO MID SYSTEM'

@@ -46,11 +46,24 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_results',
     'django_celery_beat',
-    'import_export',
+    'import_export', 'rest_framework',
+    'corsheaders',
+    'graphene_django',
     'xlrd',
     'core',
     'users',
+    'assistencia_tecnica',
 ]
+
+GRAPHENE = {
+    'SCHEMA': 'app.schema.schema',
+    # 'MIDDLEWARE': [
+    #     # 'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    #     'app.middlewares.CustomMiddleware',
+    #     'app.middlewares.CustomPaginationMiddleware',
+    # ]
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
