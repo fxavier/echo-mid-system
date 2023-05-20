@@ -1,8 +1,9 @@
 from rest_framework import serializers
-
-
-from assistencia_tecnica.models import Provincia, Distrito, UnidadeSanitaria, Sector, Area, Indicador, FichaAssistenciaTecnica
 from users.models import User
+
+from assistencia_tecnica.models import (Area, Distrito,
+                                        FichaAssistenciaTecnica, Indicador,
+                                        Provincia, Sector, UnidadeSanitaria)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,7 +15,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProvinciaSerializer(serializers.ModelSerializer):
-    #distritos = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Provincia
@@ -23,28 +23,33 @@ class ProvinciaSerializer(serializers.ModelSerializer):
 
 
 class DistritoSerializer(serializers.ModelSerializer):
-    provincia = ProvinciaSerializer()
-   # provincia = serializers.StringRelatedField(many=False)
-   # unidades_sanitarias = serializers.StringRelatedField(many=True)
+    provincia_name = serializers.StringRelatedField(
+        source='provincia', read_only=True)
 
     class Meta:
         model = Distrito
-        fields = ['id', 'nome', 'provincia']
-        read_only_fields = ('id',)
+        fields = ['id', 'nome', 'provincia_name', 'provincia']
+
+    def save(self, **kwargs):
+        return super().save(**kwargs)
+
+    def create(self, validated_data):
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
 
 
 class UnidadeSanitariaSerializer(serializers.ModelSerializer):
-    distrito = DistritoSerializer()
+    distrito_name = serializers.StringRelatedField(source='distrito')
 
     class Meta:
         model = UnidadeSanitaria
-        fields = ['id', 'nome', 'distrito']
-        read_only_fields = ('id',)
+        fields = ['id', 'nome', 'distrito', 'distrito_name']
+        read_only_fields = ('id', 'distrito_name')
 
 
 class SectorSerializer(serializers.ModelSerializer):
-   # areas = serializers.StringRelatedField(many=True)
-
     class Meta:
         model = Sector
         fields = ['id', 'nome']
@@ -52,44 +57,40 @@ class SectorSerializer(serializers.ModelSerializer):
 
 
 class AreaSerializer(serializers.ModelSerializer):
-    sector = SectorSerializer()
-   # indicadores = serializers.StringRelatedField(many=True)
+    sector_name = serializers.StringRelatedField(source='sector')
 
     class Meta:
         model = Area
-        fields = ['id', 'nome', 'sector']
-        read_only_fields = ('id',)
+        fields = ['id', 'nome', 'sector', 'sector_name']
+        read_only_fields = ('id', 'sector_name')
 
 
 class IndicadorSerializer(serializers.ModelSerializer):
-    area = AreaSerializer()
+    area_name = serializers.StringRelatedField(source='area')
 
     class Meta:
         model = Indicador
-        fields = ['id', 'nome', 'area']
-        read_only_fields = ('id',)
+        fields = ['id', 'nome', 'area', 'area_name']
+        read_only_fields = ('id', 'area_name')
 
 
 class FichaAssistenciaTecnicaSerializer(serializers.ModelSerializer):
-    # indicador = serializers.PrimaryKeyRelatedField(
-    #     queryset=Indicador.objects.all())
-    # feito_por = serializers.StringRelatedField()
-    # unidades_sanitaria = serializers.PrimaryKeyRelatedField(
-    #     queryset=UnidadeSanitaria.objects.all())
-    unidades_sanitaria = UnidadeSanitariaSerializer()
-    indicador = IndicadorSerializer()
-    feito_por = UserSerializer()
+    indicador_name = serializers.StringRelatedField(source='indicador')
+    autor = serializers.StringRelatedField(source='feito_por')
+    unidades_sanitaria_name = serializers.StringRelatedField(
+        source='unidades_sanitaria')
 
     class Meta:
         model = FichaAssistenciaTecnica
-        fields = ['id', 'unidades_sanitaria', 'indicador', 'nome_responsavel', 'nome_provedor',
-                  'problemas_identificados', 'tipo_problema', 'atcividades_realizar_resolver_problema',
-                  'nome_pessoa_responsavel_resolver', 'email_pessoa_responsavel_resolver', 'prazo', 'nome_beneficiario_at',
-                  'feito_por', 'feito_em', 'comentarios'
+        fields = ['id', 'unidades_sanitaria', 'unidades_sanitaria_name',
+                  'indicador',
+                  'indicador_name', 'nome_responsavel', 'nome_provedor',
+                  'problemas_identificados', 'tipo_problema',
+                  'atcividades_realizar_resolver_problema',
+                  'nome_pessoa_responsavel_resolver',
+                  'email_pessoa_responsavel_resolver',
+                  'prazo', 'nome_beneficiario_at',
+                  'feito_por', 'autor', 'feito_em', 'comentarios',
                   ]
-        read_only_fields = ('id',)
-
-
-class FichaAssistenciaTecnicaDetailSerializer(FichaAssistenciaTecnicaSerializer):
-    indicador = IndicadorSerializer
-    unidades_sanitaria = UnidadeSanitariaSerializer
+        read_only_fields = ('id', 'unidades_sanitaria_name',
+                            'indicador_name', 'autor',)

@@ -1,11 +1,15 @@
+from assistencia_tecnica.models import (Area, Distrito,
+                                        FichaAssistenciaTecnica, Indicador,
+                                        Provincia, Sector, UnidadeSanitaria)
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext as _
 from import_export.admin import ImportExportMixin
-
-from core.models import PatientEligibleVLCollection, ViralLoadTestResult, GlobalProperty, Visit, MissedAppointment, DatabaseConfig
-from assistencia_tecnica.models import Provincia, Distrito, UnidadeSanitaria, Sector, Area, Indicador, FichaAssistenciaTecnica
 from users.models import User
+
+from core.models import (DatabaseConfig, MissedAppointment,
+                         PatientEligibleVLCollection, ViralLoadTestResult,
+                         Visit)
 
 
 class UserAdmin(BaseUserAdmin):
@@ -30,29 +34,29 @@ class UserAdmin(BaseUserAdmin):
 
 class VisitAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = [
-        'id', 'province', 'district', 'health_facility', 'patient_identifier', 'age', 'gender', 'appointment_date',
-        'next_appointment_date', 'synced'
+        'id', 'province', 'district', 'health_facility', 'patient_identifier',
+        'age', 'gender', 'appointment_date', 'next_appointment_date', 'synced'
     ]
 
 
 class MissedAppointmentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = [
-        'id', 'province', 'district', 'health_facility', 'patient_identifier', 'age', 'gender',
-        'last_appointment_date', 'synced'
+        'id', 'province', 'district', 'health_facility', 'patient_identifier',
+        'age', 'gender', 'last_appointment_date', 'synced'
     ]
 
 
 class PatientEligibleVLCollectionAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = [
-        'id', 'province', 'district', 'health_facility', 'patient_identifier', 'age',
-        'last_vl_date', 'last_vl_value', 'last_vl_quality', 'synced'
+        'id', 'province', 'district', 'health_facility', 'patient_identifier',
+        'age', 'last_vl_date', 'last_vl_value', 'last_vl_quality', 'synced'
     ]
 
 
 class ViralLoadTestResultAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = [
-        'id', 'province', 'district', 'health_facility', 'patient_identifier', 'age',
-        'last_vl_date', 'last_vl_value', 'last_vl_quality', 'synced'
+        'id', 'province', 'district', 'health_facility', 'patient_identifier',
+        'age', 'last_vl_date', 'last_vl_value', 'last_vl_quality', 'synced'
     ]
 
 
@@ -63,8 +67,9 @@ class GlobalPropertyAdmin(ImportExportMixin, admin.ModelAdmin):
 class DatabaseConfigAdmin(ImportExportMixin, admin.ModelAdmin):
 
     list_display = [
-        'province', 'openmrs_username', 'openmrs_password', 'openmrs_url', 'openmrs_rest_endpoint',
-        'reminder_uuid', 'missed_appointment_uuid', 'viral_load_eligibility_uuid', 'viral_load_test_result_uuid',
+        'province', 'openmrs_username', 'openmrs_password', 'openmrs_url',
+        'openmrs_rest_endpoint', 'reminder_uuid', 'missed_appointment_uuid',
+        'viral_load_eligibility_uuid', 'viral_load_test_result_uuid',
         'viamo_api_url', 'viamo_api_public_key'
     ]
 
@@ -94,8 +99,10 @@ class IndicadorAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class FichaAssistenciaTecnicaAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ['id', 'nome_responsavel', 'nome_provedor', 'problemas_identificados',
-                    'tipo_problema', 'atcividades_realizar_resolver_problema']
+    list_display = ['id', 'nome_responsavel', 'nome_provedor',
+                    'problemas_identificados', 'tipo_problema',
+                    'atcividades_realizar_resolver_problema'
+                    ]
 
 
 admin.site.register(User, UserAdmin)

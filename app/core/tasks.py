@@ -1,6 +1,10 @@
 from __future__ import absolute_import, unicode_literals
+
 from celery import shared_task
-from core.models import DatabaseConfig, MissedAppointment, PatientEligibleVLCollection, ViralLoadTestResult, Visit
+
+from core.models import (DatabaseConfig, MissedAppointment,
+                         PatientEligibleVLCollection, ViralLoadTestResult,
+                         Visit)
 from core.services.data_service import AddDataToMiddleware, PostData
 
 

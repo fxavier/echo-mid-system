@@ -39,8 +39,6 @@ class MissedAppointment(models.Model):
     community = models.CharField(max_length=500, blank=True, null=True)
     pregnant = models.CharField(
         max_length=10, default="NAO", null=True, blank=True)
-   # brestfeeding = models.CharField(max_length =10, default="NAO")
-   # tb = models.CharField(max_length =10, default="NAO")
     drug_pickup_missed_days = models.IntegerField(
         default=0, null=True, blank=True)
     visit_missed_days = models.IntegerField(default=0, null=True, blank=True)

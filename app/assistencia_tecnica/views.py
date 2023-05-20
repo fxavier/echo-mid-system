@@ -1,127 +1,113 @@
-from rest_framework import viewsets, mixins
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-
-from assistencia_tecnica.models import Provincia, Distrito, UnidadeSanitaria, Sector, Area, Indicador, FichaAssistenciaTecnica
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 from assistencia_tecnica import serializers
+from assistencia_tecnica.models import (Area, Distrito,
+                                        FichaAssistenciaTecnica, Indicador,
+                                        Provincia, Sector, UnidadeSanitaria)
 
 
-def _params_to_int(qs):
-        return int(qs)
+class apiV1Pagination(PageNumberPagination):
+    page_seze = 3
 
-class ProvinciaViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin):
+
+class ProvinciaViewSet(ModelViewSet):
     queryset = Provincia.objects.all()
     serializer_class = serializers.ProvinciaSerializer
-    
 
-    
-class DistritoViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+
+class DistritoViewSet(ModelViewSet):
     queryset = Distrito.objects.all()
     serializer_class = serializers.DistritoSerializer
-   
-    
-    def get_queryset(self):
 
-        provincia = self.request.query_params.get('provincia')
-        queryset = self.queryset
-        
-        if provincia:
-            provincia_id = _params_to_int(provincia)
-            queryset = queryset.filter(provincia__id=provincia_id)
-        return queryset
-    
-class UnidadeSanitariaViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+    def get_queryset(self):
+        qs = super().get_queryset()
+        provincia_id = self.request.query_params.get('provincia_id', '')
+        if provincia_id != '' and provincia_id.isnumeric():
+            qs = qs.filter(provincia_id=provincia_id)
+        return qs
+
+    def partial_update(self, request, *args, **kwargs):
+        distrito = self.get_object()
+        serializer = serializers.DistritoSerializer(
+            instance=distrito,
+            data=request.data,
+            many=False,
+            context={'request': request},
+            partial=True,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            serializer.data,
+        )
+
+
+class UnidadeSanitariaViewSet(ModelViewSet):
     queryset = UnidadeSanitaria.objects.all()
     serializer_class = serializers.UnidadeSanitariaSerializer
-    
-    
+
     def get_queryset(self):
-        
-        distrito = self.request.query_params.get('distrito')
-        queryset = self.queryset
-        
-        if distrito:
-            distrito_id = _params_to_int(distrito)
-            queryset = queryset.filter(distrito__id=distrito_id)
-        
-        return queryset
-    
-    
-class SectorViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+        qs = super().get_queryset()
+        distrito_id = self.request.query_params.get('distrito_id', '')
+        if distrito_id != '' and distrito_id.isnumeric():
+            qs = qs.filter(distrito_id=distrito_id)
+        return qs
+
+
+class SectorViewSet(ModelViewSet):
     queryset = Sector.objects.all()
     serializer_class = serializers.SectorSerializer
-   
-   
-    
-class AreaViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+
+
+class AreaViewSet(ModelViewSet):
     queryset = Area.objects.all()
     serializer_class = serializers.AreaSerializer
-   
-   
-    
+
     def get_queryset(self):
-        
-        sector = self.request.query_params.get('sector')
-        queryset = self.queryset
-        
-        if sector:
-            sector_id = _params_to_int(sector)
-            queryset = queryset.filter(sector__id=sector_id)
-        return queryset
-    
-    
-class IndicadorViewset(viewsets.GenericViewSet, mixins.ListModelMixin):
+        qs = super().get_queryset()
+        sector_id = self.request.query_params.get('sector_id', '')
+        if sector_id != '' and sector_id.isnumeric():
+            qs = qs.filter(sector_id=sector_id)
+        return qs
+
+
+class IndicadorViewSet(ModelViewSet):
     queryset = Indicador.objects.all()
     serializer_class = serializers.IndicadorSerializer
-    
-    
-    
+
     def get_queryset(self):
-        
-        area = self.request.query_params.get('area')
-        queryset = self.queryset
-        
-        if area:
-            area_id = _params_to_int(area)
-            queryset = queryset.filter(area__id=area_id)
-        
-        return queryset
-    
-    
-class FichaAssistenciaTecnicaViewSet(viewsets.GenericViewSet,
-                                     mixins.ListModelMixin,
-                                     mixins.CreateModelMixin):
+        qs = super().get_queryset()
+        area_id = self.request.query_params.get('area_id', '')
+        if area_id != '' and area_id.isnumeric():
+            qs = qs.filter(area_id=area_id)
+        return qs
+
+
+class FichaViewSet(ModelViewSet):
     queryset = FichaAssistenciaTecnica.objects.all()
     serializer_class = serializers.FichaAssistenciaTecnicaSerializer
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAuthenticated,)
-    
-    # def _params_to_ints(self, qs):
-    #     return [int(str_id) for str_id in qs.split(',')]
-    
-    def get_queryset(self):
-        indicador = self.request.query_params.get('indicador')
-        unidade_sanitaria = self.request.query_params.get('unidade_sanitaria')
-        
-        queryset = self.queryset
-        
-        if indicador:
-            indicador_id = _params_to_int(indicador)
-            queryset = queryset.filter(indicador__id=indicador_id)
-        if unidade_sanitaria:
-            us_id = _params_to_int(unidade_sanitaria)
-            queryset = queryset.filter(unidade_sanitaria__id=us_id)
-        return queryset #.filter(user=self.request.user)
-    
-    def get_serializer_class(self):
-        """Return appropriate serializer class"""
-        if self.action == 'retrieve':
-            return serializers.FichaAssistenciaTecnicaDetailSerializer
-       
-        return self.serializer_class
 
-    def perform_create(self, serializer):
-        """Create a new recipe"""
+    def get_queryset(self):
+        qs = super().get_queryset()
+        unidade_sanitaria_id = self.request.query_params.get(
+            'unidade_sanitaria_id', '')
+        if unidade_sanitaria_id != '' and unidade_sanitaria_id.isnumeric():
+            qs = qs.filter(unidade_sanitaria_id=unidade_sanitaria_id)
+        return qs
+
+    def partial_update(self, request, *args, **kwargs):
+        ficha = self.get_object()
+        serializer = serializers.FichaAssistenciaTecnicaSerializer(
+            instance=ficha,
+            data=request.data,
+            many=False,
+            context={'request': request},
+            partial=True,
+        )
+        serializer.is_valid(raise_exception=True)
         serializer.save()
-        
+        return Response(
+            serializer.data,
+        )
