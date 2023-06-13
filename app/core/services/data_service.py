@@ -196,7 +196,12 @@ class PostData:
     database_conf = DatabaseConfig.objects.get(pk=1)
 
     @classmethod
-    def create_payload(cls, queryset, group_id, date_attribute=None):
+    def create_payload(
+        cls, queryset,
+        group_id,
+        date_attribute=None,
+        gender_attribute=None
+    ):
         payload_list = []
         for item in queryset:
             phone = item.phone_number.strip()
@@ -212,16 +217,19 @@ class PostData:
 
             data_values = {
                 "patient_identifier": item.patient_identifier,
-                "gender": item.gender,
                 "pregnant": item.pregnant,
                 "age": item.age,
                 "district": item.district,
                 "province": item.province,
                 "health_facility": item.health_facility
             }
+
             if date_attribute:
                 data_values[date_attribute] = '{:%Y-%m-%d}'.format(
                     getattr(item, date_attribute))
+
+            if gender_attribute:
+                data_values[gender_attribute] = getattr(item, gender_attribute)
 
             payload['property'] = data_values
             payload_list.append(payload)
@@ -244,6 +252,7 @@ class PostData:
                     records += 1
                 else:
                     records_not_sent.append(data.copy())
+                    records += 1
             print(f'Records not sent: {records_not_sent}')
         except requests.exceptions.RequestException as err:
             print(err)
@@ -253,14 +262,14 @@ class PostData:
         queryset = Visit.objects.exclude(
             phone_number=None).filter(synced=False)
         payload_list = cls.create_payload(
-            queryset, "463089", "next_appointment_date")
+            queryset, "463089", "next_appointment_date", "gender")
         cls.post_data(payload_list)
 
     @classmethod
     def post_missed_appointment(cls):
         queryset = MissedAppointment.objects.exclude(phone_number=None)
         payload_list = cls.create_payload(
-            queryset, "485273", "last_appointment_date")
+            queryset, "485273", "last_appointment_date", "gender")
         cls.post_data(payload_list)
 
     @classmethod
