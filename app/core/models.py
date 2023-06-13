@@ -9,7 +9,7 @@ class Visit(models.Model):
     patient_name = models.CharField(max_length=255)
     patient_identifier = models.CharField(
         max_length=255, null=True, blank=True)
-    age = models.IntegerField()
+    age = models.IntegerField(default=0)
     phone_number = models.CharField(max_length=150, null=True, blank=True)
     appointment_date = models.DateField()
     next_appointment_date = models.DateField()
@@ -32,7 +32,7 @@ class MissedAppointment(models.Model):
     patient_name = models.CharField(max_length=255)
     patient_identifier = models.CharField(
         max_length=255, null=True, blank=True)
-    age = models.IntegerField()
+    age = models.IntegerField(default=0)
     phone_number = models.CharField(max_length=150, null=True, blank=True)
     last_appointment_date = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=150, blank=True, null=True)
@@ -85,7 +85,7 @@ class PatientEligibleVLCollection(models.Model):
     patient_name = models.CharField(max_length=255)
     patient_identifier = models.CharField(
         max_length=255, null=True, blank=True)
-    age = models.IntegerField()
+    age = models.IntegerField(default=0)
     phone_number = models.CharField(max_length=150, null=True, blank=True)
     pregnant = models.CharField(
         max_length=10, default="NAO", null=True, blank=True)
@@ -111,7 +111,7 @@ class ViralLoadTestResult(models.Model):
     patient_name = models.CharField(max_length=255)
     patient_identifier = models.CharField(
         max_length=255, null=True, blank=True)
-    age = models.IntegerField()
+    age = models.IntegerField(default=0)
     phone_number = models.CharField(max_length=150, null=True, blank=True)
     pregnant = models.CharField(
         max_length=10, default="NAO", null=True, blank=True)
